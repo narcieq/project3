@@ -9,6 +9,17 @@ planet::~planet() {
 }
 
 //set variable functions
+void planet::set_allocation(int n) {
+	F_x = new double[n];
+	F_y = new double[n];
+	position_x = new double[n];
+	position_y = new double[n];
+	v_x = new double[n];
+	v_y = new double[n];
+	a_x = new double[n];
+	a_y = new double[n];
+}
+
 void planet::set_planet_name(string pname) { name = pname; }
 void planet::set_planet_mass(double pmass) { mass = pmass; }
 void planet::set_planet_F_x(double pF_x, int index) { F_x[index] = pF_x; }

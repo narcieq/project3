@@ -1,11 +1,11 @@
 #include "solver.h"
 
-solver::solver(int N) {
+solver::solver(int N, int n) {
 	//allocate N planets to planet list
-	planet_list = new planet[N];
+	planet_list = new planet;
 
 	//call initialize function
-	initialize_planet(N);
+	initialize_planet(N, n);
 }
 
 solver::~solver() {
@@ -21,7 +21,11 @@ void solver::VV() {
 
 }
 
-void solver::initialize_planet(int N) {
+void solver::initialize_planet(int N, int n) {
+	for (int i = 0; i < N; i++) {
+		planet_list[i].set_allocation(n);
+	}
+
 	string temp_s;
 	double temp_d[9];
 

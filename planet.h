@@ -7,6 +7,8 @@ class planet {
 private:
 	string name;
 	double mass;
+
+	//will be allocated n elements
 	double* F_x;
 	double* F_y;
 	double* position_x;
