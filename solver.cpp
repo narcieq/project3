@@ -68,8 +68,8 @@ void solver::initialize_planet(int N, int n) {
 		planet_list[i].set_planet_mass(temp_d[0]);
 		planet_list[i].set_planet_position_x(temp_d[1], 0);
 		planet_list[i].set_planet_position_y(temp_d[2], 0);
-		planet_list[i].set_planet_v_x(temp_d[3], 0);
-		planet_list[i].set_planet_v_y(temp_d[4], 0);
+		planet_list[i].set_planet_v_x(temp_d[3]*365, 0);
+		planet_list[i].set_planet_v_y(temp_d[4]*365, 0);
 		
 		//calculate 4 properties
 		temp = cal_F(0, i, N, 0);
