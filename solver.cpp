@@ -122,3 +122,7 @@ double solver::cal_F(int step, int index, int number_planets, bool XY) {
 	}
 	return F;
 }
+
+planet* solver::get_planet_list() {
+	return planet_list;
+}

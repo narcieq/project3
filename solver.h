@@ -20,6 +20,7 @@ public:
 	void VV();//solve with velocity verlet method
 
 	void initialize_planet(int N, int n);//set for initialization
+	planet* get_planet_list();
 
 	double cal_F(int step, int index, int number_planets, bool XY);
 };

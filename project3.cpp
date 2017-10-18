@@ -9,7 +9,7 @@
 
 using namespace std;
 
-void output_file(string flag, solver SOLVER, int N, int n);
+void output_file(string flag, solver* SOLVER, int N, int n);
 
 
 int main(int argc, char* argv[])
@@ -37,7 +37,7 @@ int main(int argc, char* argv[])
 		if ((string(argv[i]).find("-") == 0 && string(argv[i]).find("e") != string::npos)) {
 			SOLVER.Euler(n);
 			flag = 'e';
-			output_file(e, SOLVER, N, n);
+			output_file(flag, &SOLVER, N, n);
 		}
 
 		// use velocity verlet method
@@ -52,7 +52,7 @@ int main(int argc, char* argv[])
     return 0;
 }
 
-void output_file(string flag, solver SOLVER, int N, int n) {
+void output_file(string flag, solver* SOLVER, int N, int n) {
 	fstream fs;
 	string filename;
 
@@ -64,16 +64,18 @@ void output_file(string flag, solver SOLVER, int N, int n) {
 	filename += N;
 	filename += "_planets.txt";
 
+	planet* temp_list = SOLVER->get_planet_list();
+
 	fs.open(filename);
 	int i = 0;
 	while (i != N) {
-		fs << SOLVER->planet_list[i].get_planet_name() << "                                    ";
+		fs << temp_list[i].get_planet_name() << "                                    ";
 		i++;
 	}
 	fs << endl;
 	for (int j = 0; j < n + 1; j++) {
 		for (i = 0; i < N; i++) {
-			fs << SOLVER->planet_list[i].get_position_x(j) << "   " << SOLVER->planet_list[i].get_position_y(j) << "   ";
+			fs << temp_list[i].get_planet_position_x(j) << "   " << temp_list[i].get_planet_position_y(j) << "   ";
 		}
 		fs << endl;
 	}
