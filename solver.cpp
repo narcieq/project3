@@ -1,4 +1,7 @@
+#pragma once
 #include "solver.h"
+#include <iostream>
+using namespace std;
 
 //gravitational constant
 const double G = 6.67e-11;
@@ -10,7 +13,7 @@ solver::solver(int N, int n, int final_time) {
 	//allocate N planets to planet list
 	planet_list = new planet[N];
 
-	h = final_time / n;
+	h = (double)final_time / (double)n;
 
 	//call initialize function
 	initialize_planet(N, n+1);
@@ -26,6 +29,7 @@ void solver::Euler(int n) {
 
 	for (int i = 0; i < number_planets; i++) {
 		for (int j = 1; j < n + 1; j++) {
+			//cout << planet_list[i].get_planet_v_x(j - 1) << endl;
 			planet_list[i].set_planet_position_x(planet_list[i].get_planet_position_x(j - 1) + h * planet_list[i].get_planet_v_x(j - 1), j);
 			planet_list[i].set_planet_position_y(planet_list[i].get_planet_position_y(j - 1) + h * planet_list[i].get_planet_v_y(j - 1), j);
 			planet_list[i].set_planet_v_x(planet_list[i].get_planet_v_x(j - 1) + h * planet_list[i].get_planet_a_x(j - 1), j);
@@ -83,8 +87,8 @@ void solver::initialize_planet(int N, int n) {
 		planet_list[i].set_planet_mass(temp_d[0]);
 		planet_list[i].set_planet_position_x(temp_d[1], 0);
 		planet_list[i].set_planet_position_y(temp_d[2], 0);
-		planet_list[i].set_planet_v_x(temp_d[3]*365, 0);
-		planet_list[i].set_planet_v_y(temp_d[4]*365, 0);
+		planet_list[i].set_planet_v_x(temp_d[3]*(double)365, 0);
+		planet_list[i].set_planet_v_y(temp_d[4]*(double)365, 0);
 		
 		//calculate 4 properties
 		temp = cal_F(0, i, N, 0);

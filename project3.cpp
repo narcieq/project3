@@ -47,7 +47,7 @@ int main(int argc, char* argv[])
 			output_file(flag, &SOLVER, N, n);
 		}
 	}
-
+	
 	
 
 
@@ -55,11 +55,11 @@ int main(int argc, char* argv[])
 }
 
 void output_file(string flag, solver* SOLVER, int N, int n) {
-	fstream fs;
+	ofstream fs;
 	string filename;
 	
-
 	//set file name : 'method'_n_steps_N_planets.txt
+	
 	if (flag.find("e") == 0) { filename = "Euler_"; }
 	else { filename = "VV_"; }
 	filename += to_string(n);
@@ -67,22 +67,29 @@ void output_file(string flag, solver* SOLVER, int N, int n) {
 	filename += to_string(N);
 	filename += "_planets.txt";
 
+	cout << filename;
+
+	
+
 	planet* temp_list = SOLVER->get_planet_list();
 
 	fs.open(filename);
+	
 	int i = 0;
-	while (i != N) { // print name
+	for (i = 0; i < N; i++) { // print name
 		fs << temp_list[i].get_planet_name() << "                                    ";
-		i++;
 	}
 	fs << endl;
 
 	for (int j = 0; j < n + 1; j++) { // print values of x & y position
+		i = 0;
 		for (i = 0; i < N; i++) {
-			fs << temp_list[i].get_planet_position_x(j) << "   " << temp_list[i].get_planet_position_y(j) << "   ";
+			//cout << temp_list[i].get_planet_position_x(j) << "            " << temp_list[i].get_planet_position_y(j) << "            ";
+			fs << temp_list[i].get_planet_position_x(j) << "            " << temp_list[i].get_planet_position_y(j) << "            ";
 		}
 		fs << endl;
-		i = 0;
+		//cout << endl;
+		
 	}
 
 
