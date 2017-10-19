@@ -40,8 +40,23 @@ void solver::Euler(int n) {
 	}
 }
 
-void solver::VV() {
+void solver::VV(int n) {
+	double* r = new double[number_planets - 1];
 
+	for (int i = 0; i < number_planets; i++) {
+		for (int j = 1; j < n + 1; j++) {
+			planet_list[i].set_planet_position_x(h * planet_list[i].get_planet_v_x(j - 1) + 0.5 * h * h * planet_list[i].get_planet_a_x(j - 1), j);
+			planet_list[i].set_planet_position_y(h * planet_list[i].get_planet_v_y(j - 1) + 0.5 * h * h * planet_list[i].get_planet_a_y(j - 1), j);
+			//distance is calculated and updated in cal_F : x
+			cal_F(j, i, number_planets, 0);
+			//distance is calculated and updated in cal_F : y
+			cal_F(j, i, number_planets, 1);
+			planet_list[i].set_planet_a_x(planet_list[i].get_planet_F_x() / planet_list[i].get_planet_mass(), j);
+			planet_list[i].set_planet_a_y(planet_list[i].get_planet_F_y() / planet_list[i].get_planet_mass(), j);
+			planet_list[i].set_planet_v_x(0.5 * h * (planet_list[i].get_planet_a_x(j - 1) +  planet_list[i].get_planet_a_x(j)), j);
+			planet_list[i].set_planet_v_y(0.5 * h * (planet_list[i].get_planet_a_y(j - 1) +  planet_list[i].get_planet_a_y(j)), j);			
+		}
+	}
 }
 
 void solver::initialize_planet(int N, int n) {

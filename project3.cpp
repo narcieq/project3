@@ -42,7 +42,9 @@ int main(int argc, char* argv[])
 
 		// use velocity verlet method
 		else if ((string(argv[i]).find("-") == 0 && string(argv[i]).find("v") != string::npos)) {
-			SOLVER.VV();
+			SOLVER.VV(n);
+			flag = 'v';
+			output_file(flag, &SOLVER, N, n);
 		}
 	}
 
@@ -68,12 +70,13 @@ void output_file(string flag, solver* SOLVER, int N, int n) {
 
 	fs.open(filename);
 	int i = 0;
-	while (i != N) {
+	while (i != N) { // print name
 		fs << temp_list[i].get_planet_name() << "                                    ";
 		i++;
 	}
 	fs << endl;
-	for (int j = 0; j < n + 1; j++) {
+
+	for (int j = 0; j < n + 1; j++) { // print values of x & y position
 		for (i = 0; i < N; i++) {
 			fs << temp_list[i].get_planet_position_x(j) << "   " << temp_list[i].get_planet_position_y(j) << "   ";
 		}
