@@ -1,4 +1,7 @@
 #include "solver.h"
+//Initial file : name x y vx vy
+//Sun 5.5e26 0 0 0 0
+//Earth  6e24 1 0 -5.487608572692462E-03 1.633769725891812E-02
 
 //gravitational constant
 const double G = 6.67e-11;
@@ -10,7 +13,7 @@ solver::solver(int N, int n, int final_time) {
 	//allocate N planets to planet list
 	planet_list = new planet[N];
 
-	h = final_time / n;
+    h =(double) final_time / (double)n;
 
 	//call initialize function
 	initialize_planet(N, n+1);
@@ -68,7 +71,7 @@ void solver::initialize_planet(int N, int n) {
 	double temp_d[5];
 	double temp;
 
-	fs.open("planet_initialize.txt");
+    fs.open("SunEarthInitialize.txt");
 	//set planet list with file
 	for (int i = 0; i < N; i++) {
 		//get & set name
@@ -83,8 +86,8 @@ void solver::initialize_planet(int N, int n) {
 		planet_list[i].set_planet_mass(temp_d[0]);
 		planet_list[i].set_planet_position_x(temp_d[1], 0);
 		planet_list[i].set_planet_position_y(temp_d[2], 0);
-		planet_list[i].set_planet_v_x(temp_d[3]*365, 0);
-		planet_list[i].set_planet_v_y(temp_d[4]*365, 0);
+        planet_list[i].set_planet_v_x(temp_d[3]*365.0, 0);
+        planet_list[i].set_planet_v_y(temp_d[4]*365.0, 0);
 		
 		//calculate 4 properties
 		temp = cal_F(0, i, N, 0);

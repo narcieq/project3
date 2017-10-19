@@ -14,7 +14,8 @@ void output_file(string flag, solver* SOLVER, int N, int n);
 
 int main(int argc, char* argv[])
 {
-	//get number of planets from command line
+
+    //get number of planets from command line
 	int N = atoi(argv[argc - 1]);
 
 	//get number of time steps from command line
@@ -55,7 +56,7 @@ int main(int argc, char* argv[])
 }
 
 void output_file(string flag, solver* SOLVER, int N, int n) {
-	fstream fs;
+    ofstream fs;
 	string filename;
 	
 
