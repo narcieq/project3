@@ -34,8 +34,8 @@ void solver::Euler(int n) {
 			cal_F(j, i, number_planets, 0);
 			//distance is calculated and updated in cal_F : y
 			cal_F(j, i, number_planets, 1);
-			planet_list[i].set_planet_a_x(planet_list[i].get_planet_F_x() / planet_list[i].get_planet_mass(), j);
-			planet_list[i].set_planet_a_y(planet_list[i].get_planet_F_y() / planet_list[i].get_planet_mass(), j);
+			planet_list[i].set_planet_a_x(planet_list[i].get_planet_F_x(j) / planet_list[i].get_planet_mass(), j);
+			planet_list[i].set_planet_a_y(planet_list[i].get_planet_F_y(j) / planet_list[i].get_planet_mass(), j);
 		}
 	}
 }
@@ -51,8 +51,8 @@ void solver::VV(int n) {
 			cal_F(j, i, number_planets, 0);
 			//distance is calculated and updated in cal_F : y
 			cal_F(j, i, number_planets, 1);
-			planet_list[i].set_planet_a_x(planet_list[i].get_planet_F_x() / planet_list[i].get_planet_mass(), j);
-			planet_list[i].set_planet_a_y(planet_list[i].get_planet_F_y() / planet_list[i].get_planet_mass(), j);
+			planet_list[i].set_planet_a_x(planet_list[i].get_planet_F_x(j) / planet_list[i].get_planet_mass(), j);
+			planet_list[i].set_planet_a_y(planet_list[i].get_planet_F_y(j) / planet_list[i].get_planet_mass(), j);
 			planet_list[i].set_planet_v_x(0.5 * h * (planet_list[i].get_planet_a_x(j - 1) +  planet_list[i].get_planet_a_x(j)), j);
 			planet_list[i].set_planet_v_y(0.5 * h * (planet_list[i].get_planet_a_y(j - 1) +  planet_list[i].get_planet_a_y(j)), j);			
 		}

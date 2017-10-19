@@ -36,8 +36,8 @@ void planet::set_planet_r(double pr, int index) { r[index] = pr; }
 //get varibale functions
 string planet::get_planet_name() { return name; }
 double planet::get_planet_mass() { return mass; }
-double planet::get_planet_F_x() { return* F_x; }
-double planet::get_planet_F_y() { return* F_y; }
+double planet::get_planet_F_x(int j) { return F_x[j]; }
+double planet::get_planet_F_y(int j) { return F_y[j]; }
 double planet::get_planet_position_x(int j) { return position_x[j]; }
 double planet::get_planet_position_y(int j) { return position_y[j]; }
 double planet::get_planet_v_x(int j) { return v_x[j]; }

@@ -57,13 +57,14 @@ int main(int argc, char* argv[])
 void output_file(string flag, solver* SOLVER, int N, int n) {
 	fstream fs;
 	string filename;
+	
 
 	//set file name : 'method'_n_steps_N_planets.txt
 	if (flag.find("e") == 0) { filename = "Euler_"; }
 	else { filename = "VV_"; }
-	filename += n;
+	filename += to_string(n);
 	filename += "_steps_";
-	filename += N;
+	filename += to_string(N);
 	filename += "_planets.txt";
 
 	planet* temp_list = SOLVER->get_planet_list();
@@ -81,6 +82,7 @@ void output_file(string flag, solver* SOLVER, int N, int n) {
 			fs << temp_list[i].get_planet_position_x(j) << "   " << temp_list[i].get_planet_position_y(j) << "   ";
 		}
 		fs << endl;
+		i = 0;
 	}
 
 
