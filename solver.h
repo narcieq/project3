@@ -17,7 +17,7 @@ public:
 	~solver();
 
 	void Euler(int n);//solve with Euler method
-	void VV();//solve with velocity verlet method
+	void VV(int n);//solve with velocity verlet method
 
 	void initialize_planet(int N, int n);//set for initialization
 	planet* get_planet_list();

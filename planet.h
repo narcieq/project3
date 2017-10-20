@@ -38,8 +38,8 @@ public:
 	//get functions
 	string get_planet_name();
 	double get_planet_mass();
-	double get_planet_F_x();
-	double get_planet_F_y();
+	double get_planet_F_x(int j);
+	double get_planet_F_y(int j);
 	double get_planet_position_x(int j);
 	double get_planet_position_y(int j);
 	double get_planet_v_x(int j);
