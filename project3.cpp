@@ -9,6 +9,7 @@
 
 using namespace std;
 
+
 void output_file(string flag, solver* SOLVER, int N, int n);
 
 
@@ -28,21 +29,34 @@ int main(int argc, char* argv[])
 	//flags
 	//-e : use Euler moethod
 	//-v : use velocity verlet method
+	//-c : assume the sun is in the center of mass
+	//-m : when sun is not in the center of mass
 
 	string flag;
 
 	// check flag
 	for (int i = 1; i < argc; i++) {
-		//use Euler moethod
-		if ((string(argv[i]).find("-") == 0 && string(argv[i]).find("e") != string::npos)) {
-			SOLVER.Euler(n);
-			flag = 'e';
-			output_file(flag, &SOLVER, N, n);
+		// when Sun is in the center of mass : -c
+		if ((string(argv[i]).find("-") == 0 && string(argv[i]).find("c") != string::npos)){
+			for (int k = i; k < argc; k++) {
+				//use Euler moethod : -e
+				if ((string(argv[k]).find("-") == 0 && string(argv[k]).find("e") != string::npos)) {
+					SOLVER.Euler(n);
+					flag = 'e';
+					output_file(flag, &SOLVER, N, n);
+				}
+
+				// use velocity verlet method : -v
+				else if ((string(argv[k]).find("-") == 0 && string(argv[k]).find("v") != string::npos)) {
+					SOLVER.VV(n);
+					flag = 'v';
+					output_file(flag, &SOLVER, N, n);
+				}
+			}
 		}
 
-		// use velocity verlet method
-		else if ((string(argv[i]).find("-") == 0 && string(argv[i]).find("v") != string::npos)) {
-			SOLVER.VV(n);
+		else if ((string(argv[i]).find("-") == 0 && string(argv[i]).find("m") != string::npos)) {
+			SOLVER.VV(n, false);//sun is not center of mass
 			flag = 'v';
 			output_file(flag, &SOLVER, N, n);
 		}
@@ -60,16 +74,14 @@ void output_file(string flag, solver* SOLVER, int N, int n) {
 	
 	//set file name : 'method'_n_steps_N_planets.txt
 	
-	if (flag.find("e") == 0) { filename = "Euler_"; }
+	if (flag.find("e") == 0) { filename = "EULER_"; }
 	else { filename = "VV_"; }
 	filename += to_string(n);
 	filename += "_steps_";
 	filename += to_string(N);
 	filename += "_planets.txt";
 
-	cout << filename;
-
-	
+	cout << filename <<  endl;	
 
 	planet* temp_list = SOLVER->get_planet_list();
 
