@@ -6,6 +6,15 @@ planet::planet() {
 
 planet::~planet() {
 	//delete dynamic allocated variables
+	//delete[] F_x;
+	//delete[] F_y;
+	//delete[] position_x;
+	//delete[] position_y;
+	//delete[] v_x;
+	//delete[] v_y;
+	//delete[] a_x;
+	//delete[] a_y;
+	//delete[] r;
 }
 
 //set variable functions n steps
