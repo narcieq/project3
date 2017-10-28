@@ -40,6 +40,7 @@ public:
 	double cal_center_y(int step);
 
 	double return_perihelion(int n);
+	void cal_R_perihelion(double R_tan);
 
 	void cal_Sun_initial();
 
@@ -50,7 +51,7 @@ public:
 	bool check_time_resolution(int n);
 	double get_N_ceta();
 	double get_R_ceta();
-	void init(double x, double y, double vx, double vy, int N, int n, int final_time);
+	void init(bool NR, double x, double y, double vx, double vy, int N, int n, double final_time);
 
 	//test stability
 	double check_circular(int n);

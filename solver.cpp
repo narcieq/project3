@@ -10,30 +10,34 @@ const double pi = acos(-1.0);
 const double G = 4 * pi*pi;
 
 //speed of light in vacuum (AU/year)
-double c = 63239.7263485;
+double c = 63072;
 
 solver::solver(bool check) {}
 
-void solver::init(double x, double y, double vx, double vy, int N, int n, int final_time) {
+void solver::init(bool NR, double x, double y, double vx, double vy, int N, int n, double final_time) {
+	// NR : true --> N / false --> R
+
 	number_planets = N;
 
 	//allocate N planets to planet list
 	planet_list = new planet[N];
 
 	h = (double)final_time / (double)n;
+	
+	//system("pause");
 
 	perihelion_N_ceta = 0;
 	perihelion_R_ceta = 0;
 
 	for (int i = 0; i < N; i++) {
-		planet_list[i].set_allocation(n, N);
+		planet_list[i].set_allocation(n+1, N);
 	}
 
 	string temp_name;
 	double temp_mass;
 	double temp;
 
-	fs.open("M.txt");
+	fs.open("M.txt"); // 
 	//set planet list with file
 	for (int i = 0; i < N; i++) {
 		//get & set name
@@ -41,7 +45,15 @@ void solver::init(double x, double y, double vx, double vy, int N, int n, int fi
 		planet_list[i].set_planet_name(temp_name);
 		fs >> temp_mass;
 		planet_list[i].set_planet_mass(temp_mass);
+
 	}
+
+	// scale mass : sun = 1
+	for (int i = 1; i < N; i++) {
+		planet_list[i].set_planet_mass(planet_list[i].get_planet_mass() / planet_list[0].get_planet_mass());
+	}
+	planet_list[0].set_planet_mass(planet_list[0].get_planet_mass() / planet_list[0].get_planet_mass());
+
 
 	//initialize Sun
 	planet_list[0].set_planet_position_x(0, 0);
@@ -55,6 +67,20 @@ void solver::init(double x, double y, double vx, double vy, int N, int n, int fi
 	planet_list[1].set_planet_v_x(vx, 0);
 	planet_list[1].set_planet_v_y(vy, 0);
 
+	//calculate acceleration of Mercury
+	if (NR == true) {
+		planet_list[1].set_planet_a_x(cal_F_x(0, 1, N) / planet_list[1].get_planet_mass(), 0);
+		planet_list[1].set_planet_a_y(cal_F_y(0, 1, N) / planet_list[1].get_planet_mass(), 0);
+	}
+	else  {
+		planet_list[1].set_planet_a_x(cal_RF_x(0, 1, N) / planet_list[1].get_planet_mass(), 0);
+		planet_list[1].set_planet_a_y(cal_RF_y(0, 1, N) / planet_list[1].get_planet_mass(), 0);
+	}
+
+	cout << "Mercury 0 step" << endl;
+	cout << "x = " << planet_list[1].get_planet_position_x(0) << "y = " << planet_list[1].get_planet_position_y(0) << endl;
+	cout << "ax = " << planet_list[1].get_planet_a_x(0) << "ay = " << planet_list[1].get_planet_a_y(0) << endl;
+	
 }
 
 solver::solver(int N, int n, int final_time) {
@@ -114,6 +140,7 @@ solver::solver(double x, double y, double vx, double vy, int N, int n, int final
 	planet_list[1].set_planet_v_x(vx, 0);
 	planet_list[1].set_planet_v_y(vy, 0);
 
+
 }
 
 solver::~solver() {
@@ -154,7 +181,7 @@ void solver::VV(int n) {
 			planet_list[i].set_planet_position_x(planet_list[i].get_planet_position_x(j - 1) + h * planet_list[i].get_planet_v_x(j - 1) + 0.5 * h * h * planet_list[i].get_planet_a_x(j - 1), j);
 			planet_list[i].set_planet_position_y(planet_list[i].get_planet_position_y(j - 1) + h * planet_list[i].get_planet_v_y(j - 1) + 0.5 * h * h * planet_list[i].get_planet_a_y(j - 1), j);
 		}
-
+		
 		planet_list[0].set_planet_position_x(0, j);
 		planet_list[0].set_planet_position_y(0, j);
 		
@@ -170,7 +197,16 @@ void solver::VV(int n) {
 			planet_list[k].set_planet_a_y(planet_list[k].get_planet_F_y(j) / planet_list[k].get_planet_mass(), j);
 			planet_list[k].set_planet_v_x(planet_list[k].get_planet_v_x(j - 1) + 0.5 * h * (planet_list[k].get_planet_a_x(j - 1) + planet_list[k].get_planet_a_x(j)), j);
 			planet_list[k].set_planet_v_y(planet_list[k].get_planet_v_y(j - 1) + 0.5 * h * (planet_list[k].get_planet_a_y(j - 1) + planet_list[k].get_planet_a_y(j)), j);
+			
+			
+			
 		}	
+		//cout << "inside VV " << planet_list[1].get_planet_position_x(j) << " y " << planet_list[1].get_planet_position_y(j) << endl;
+		//cout << "inside VV " << planet_list[1].get_planet_v_x(j) << " vy " << planet_list[1].get_planet_v_y(j) << endl;
+		//cout << "inside VV " << planet_list[1].get_planet_a_x(j) << " ay " << planet_list[1].get_planet_a_y(j) << endl;
+		//
+		//system("pause");
+		
 	}
 }
 
@@ -238,13 +274,18 @@ void solver::cal_Sun_initial() {
 }
 
 double solver::cal_Angular_Momentum(int index, int step) {
-	double total_v = sqrt(pow(planet_list[index].get_planet_v_x(step), 2) + pow(planet_list[index].get_planet_v_y(step), 2));
+	double vx = planet_list[index].get_planet_v_x(step);
+	double vy = planet_list[index].get_planet_v_y(step);
+	double total_v = sqrt(pow(vx, 2) + pow(vy, 2));
 	double r, x, y;
 	x = planet_list[1].get_planet_position_x(step);
 	y = planet_list[1].get_planet_position_y(step);
 	r = sqrt(x*x + y*y);
 
-	double L =  r * planet_list[index].get_planet_mass() * total_v;
+	double sin_ceta = vy / total_v*x*r - vx / total_v*y / r;
+
+	double L =  r * planet_list[index].get_planet_mass() * total_v * sin_ceta;
+	//cout << "L " << L << endl;
 	return L;
 }
 
@@ -274,6 +315,7 @@ bool solver::check_time_resolution(int n) {
 
 	double N_tan_perihelion = return_perihelion(n);
 	perihelion_N_ceta = atan(N_tan_perihelion) * 180 * 3600 / pi;
+	perihelion_N_ceta = abs(perihelion_N_ceta);
 
 	if (perihelion_N_ceta < 43.0e-2) {
 		return false;
@@ -287,7 +329,6 @@ bool solver::check_time_resolution(int n) {
 
 void solver::VV_relative(int n) { // sun = center of mass
 								  // calculate center of the mass (sun needs initilal velocity)
-								  // n --> n + n/100
 
 	//calculate considering theory of relativity
 	for (int j = 1; j < n + 1; j++) {
@@ -297,20 +338,43 @@ void solver::VV_relative(int n) { // sun = center of mass
 		planet_list[0].set_planet_position_x(0, j);
 		planet_list[0].set_planet_position_y(0, j);
 
+		//distance is calculated and updated in cal_F : x
+		//get Newtonian velocity
+		planet_list[1].set_planet_F_x(cal_F_x(j, 1, number_planets), j);
+		planet_list[1].set_planet_a_x(planet_list[1].get_planet_F_x(j) / planet_list[1].get_planet_mass(), j);
+		planet_list[1].set_planet_v_x(planet_list[1].get_planet_v_x(j - 1) + 0.5 * h * (planet_list[1].get_planet_a_x(j - 1) + planet_list[1].get_planet_a_x(j)), j);
+
+		//distance is calculated and updated in cal_F : y
+		//get Newtonian velocity
+		planet_list[1].set_planet_F_y(cal_F_y(j, 1, number_planets), j);
+		planet_list[1].set_planet_a_y(planet_list[1].get_planet_F_y(j) / planet_list[1].get_planet_mass(), j);
+		planet_list[1].set_planet_v_y(planet_list[1].get_planet_v_y(j - 1) + 0.5 * h * (planet_list[1].get_planet_a_y(j - 1) + planet_list[1].get_planet_a_y(j)), j);
+
+
 		for (int k = 0; k < number_planets; k++) {
-			//distance is calculated and updated in cal_R_F : x
+			
+
+			//calculate Relativistic velocity and acceleration of x direction
 			planet_list[k].set_planet_F_x(cal_RF_x(j, k, number_planets), j);
-			//distance is calculated and updated in cal_R_F : y
-			planet_list[k].set_planet_F_y(cal_RF_y(j, k, number_planets), j);
 			planet_list[k].set_planet_a_x(planet_list[k].get_planet_F_x(j) / planet_list[k].get_planet_mass(), j);
-			planet_list[k].set_planet_a_y(planet_list[k].get_planet_F_y(j) / planet_list[k].get_planet_mass(), j);
 			planet_list[k].set_planet_v_x(planet_list[k].get_planet_v_x(j - 1) + 0.5 * h * (planet_list[k].get_planet_a_x(j - 1) + planet_list[k].get_planet_a_x(j)), j);
+
+			
+			//calculate Relativistic velocity and acceleration of y direction
+			planet_list[k].set_planet_F_y(cal_RF_y(j, k, number_planets), j);
+			planet_list[k].set_planet_a_y(planet_list[k].get_planet_F_y(j) / planet_list[k].get_planet_mass(), j);
 			planet_list[k].set_planet_v_y(planet_list[k].get_planet_v_y(j - 1) + 0.5 * h * (planet_list[k].get_planet_a_y(j - 1) + planet_list[k].get_planet_a_y(j)), j);
 
 		}
+		cout << planet_list[1].get_planet_position_x(j) << " " << planet_list[1].get_planet_position_y(j) << endl;
+		system("pause");
 	}
-	double R_tan_perihelion = return_perihelion(n);
-	perihelion_R_ceta = atan(R_tan_perihelion) * 180 * 3600 / pi;
+	//double R_tan_perihelion = return_perihelion(n);
+	//perihelion_R_ceta = atan(R_tan_perihelion) * 180 * 3600 / pi;
+}
+
+void solver::cal_R_perihelion(double R_tan) {
+	perihelion_R_ceta = atan(R_tan) * 180 * 3600 / pi;
 }
 
 double solver::return_perihelion(int n) {
@@ -322,25 +386,25 @@ double solver::return_perihelion(int n) {
 	double vy = planet_list[1].get_planet_v_y(0);
 	double ax = planet_list[1].get_planet_a_x(0);
 	double ay = planet_list[1].get_planet_a_y(0);
-	
-	double r = x*x + y*y;
+	cout << "x = " << x << "  y = " << y << " vx = " << vx << " vy = " << vy << " ax = " << ax << "ay = " << ay << endl;
+	double r2 = x*x + y*y;
 	double temp;
 	int alpha = 1;
 	int perihelion_step = 0;
 	double total_time = 0;
 
 	while (total_time < 88.0 / 365.0) {
-		temp = pow(planet_list[1].get_planet_position_x(alpha),2) + pow(planet_list[1].get_planet_position_y(n + alpha), 2);
-		if (temp < r) {
-			r = temp;
+		temp = pow(planet_list[1].get_planet_position_x(alpha),2) + pow(planet_list[1].get_planet_position_y(alpha), 2);
+		if (temp < r2) {
+			r2 = temp;
 			perihelion_step = alpha;
 		}
 		alpha++;
 		total_time += h;
 	}
 
-	double tangent = planet_list[1].get_planet_position_x(perihelion_step) / planet_list[1].get_planet_position_y( perihelion_step);
-	cout << perihelion_step << endl;
+	double tangent = planet_list[1].get_planet_position_y(perihelion_step) / planet_list[1].get_planet_position_x( perihelion_step);
+	cout << "periheion_step" << perihelion_step << endl;
 	cout << planet_list[1].get_planet_position_x(perihelion_step) << " " << planet_list[1].get_planet_position_y(perihelion_step) << endl;
 	return tangent;
 }
@@ -356,8 +420,9 @@ double solver::cal_RF_x(int step, int index, int number_planets) {
 
 	for (int i = 0; i < number_planets; i++) {
 		if (i != index) {
-			l = cal_Angular_Momentum(index, step) / planet_list[i].get_planet_mass();
-
+			l = cal_Angular_Momentum(index, step) / planet_list[index].get_planet_mass();
+			//cout << "l in cal_RF" << l << endl;
+			//system("pause");
 			x_index = planet_list[index].get_planet_position_x(step);
 			x_i = planet_list[i].get_planet_position_x(step);
 			y_index = planet_list[index].get_planet_position_y(step);
@@ -507,9 +572,11 @@ double solver::cal_F_x(int step, int index, int number_planets) {
 			y_i = planet_list[i].get_planet_position_y(step);
 
 			r = sqrt(pow((x_index - x_i), 2) + pow((y_index - y_i), 2));
+			//cout << "inside calFX r : " << r << endl;
 			planet_list[index].set_planet_r(r, i);
 
 			F += - (G*planet_list[i].get_planet_mass()*planet_list[index].get_planet_mass()) / pow(r, 3) * (x_index - x_i);
+			//cout << planet_list[i].get_planet_mass() << " " << planet_list[index].get_planet_mass() << endl;
 		}	
 		else { F += 0; }
 	}
