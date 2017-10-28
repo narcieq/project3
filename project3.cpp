@@ -39,7 +39,7 @@ int main(int argc, char* argv[])
 	// check flag
 	for (int i = 1; i < argc; i++) {
 		// when Sun is in the center of mass : -c
-		if ((string(argv[i]).find("-") == 0 && string(argv[i]).find("c") != string::npos)){
+		if ((string(argv[i]).find("-") == 0 && string(argv[i]).find("c") != string::npos)) {
 			//create solver
 			solver SOLVER(N, n, final_time);
 			for (int k = i; k < argc; k++) {
@@ -67,26 +67,9 @@ int main(int argc, char* argv[])
 			output_file(flag, &SOLVER, N, n, final_time);
 		}
 		else if ((string(argv[i]).find("-") == 0 && string(argv[i]).find("p") != string::npos)) {
-			/*SOLVER.~solver();
-			solver S(N, n + n / 100, final_time);
-			bool need_increase = S.check_time_resolution(n + n / 100);
-			while (need_increase == false) {
-				S.~solver();
-				n = n * 10;
-				solver S(N, n + n / 100, final_time);
-			}
-			 S.VV_relative(n + n/100);//sun is not center of mass
-			flag = 'p';
-			//output_file(flag, &SOLVER, N, n, final_time);
-
-			//double N = S.get_N_ceta();
-			double R = S.get_R_ceta();
-			cout << "time resolution (step size) : " << 100/n << endl;
-			cout << "ceta of perihelion point = " << R << endl;*/
-
-
+			
 			int N = 2;
-			int n =  1e8;
+			int n = 1e8;
 			int n_limit = 1e6; // limitation of steps number for each class
 			int limit_repeat;
 			int final_time = 11;
@@ -105,17 +88,15 @@ int main(int argc, char* argv[])
 			solver temp(true);
 
 			//while (need_increase == true) {
-			
+
 			if (n > n_limit) {
-			/*	limit_repeat = n / n_limit;
+				// calculate Netonian precession
+				limit_repeat = n / n_limit;
 				h_temp = 10.0 / (double)n; // step size 
-				cout << h_temp << endl;
-				//system("pause");
 				final_limit_time = h_temp * n_limit;
-	
+
 				for (int i = 0; i < limit_repeat; i++) {
-					cout << "   " << i << endl;
-					cout << "final_limit_time" << final_limit_time << endl;
+					cout << "   *** " << i << " ***" << endl;
 					//need have initial value for poistion ,velocity, acceleration.
 					temp.init(true, init_x, init_y, init_vx, init_vy, N, n_limit, final_limit_time);
 					temp.VV(n_limit);
@@ -129,10 +110,10 @@ int main(int argc, char* argv[])
 
 				}// 10year end
 				cout << init_x << " last y " << init_y << " last vx " << init_vx << " last vy " << init_vy << endl;
-				cout << "10 year end "<< endl;
-				
-				 // 11th year
-				int last_period = 3 * n_limit;
+				cout << "10 year end " << endl;
+
+				// 11th year
+				double last_period = 3 * n_limit;
 				final_limit_time = h_temp * last_period;
 				solver temp2(true);
 				temp2.init(true, init_x, init_y, init_vx, init_vy, N, last_period, final_limit_time);
@@ -142,11 +123,11 @@ int main(int argc, char* argv[])
 				cout << "check time resolution end" << endl;
 				//if (need_increase == false) {
 				cout << "N ceta ('')" << temp2.get_N_ceta() << endl;
-			
-				*/
-				
+				//end of Newtonian precession
 
-				//calculate considering relativity
+
+
+				//calculate Relativistic precession
 				init_x = 0.3075;
 				init_y = 0;
 				init_vx = 0;
@@ -157,7 +138,7 @@ int main(int argc, char* argv[])
 				cout << h_temp << endl;
 				//system("pause");
 				final_limit_time = h_temp * n_limit;
-				
+
 				for (int i = 0; i < limit_repeat; i++) {
 					cout << "   " << i << endl;
 					//need have initial value for poistion ,velocity, acceleration.
@@ -176,9 +157,9 @@ int main(int argc, char* argv[])
 				cout << "10 year end " << endl;
 
 				// 11th year
-				double last_period = 3 * n_limit;
+				last_period = n_limit;
 				final_limit_time = h_temp * last_period;
-				solver temp2(true);
+				//solver temp2(true);
 				temp2.init(false, init_x, init_y, init_vx, init_vy, N, last_period, final_limit_time);
 				//temp2.VV(last_period);
 				cout << "temp2 created" << endl;
@@ -187,8 +168,8 @@ int main(int argc, char* argv[])
 				double R_tan_perihelion = temp2.return_perihelion(n);
 				temp2.cal_R_perihelion(R_tan_perihelion);
 				cout << "R_ceta " << temp2.get_R_ceta() << endl;
-				
-				
+				//end of Relativixtic precession
+
 				//}
 				//else {
 				//	n = n * 10;
@@ -198,17 +179,17 @@ int main(int argc, char* argv[])
 
 		}
 	}
-    return 0;
+	return 0;
 }
 
 void output_file(string flag, solver* SOLVER, int N, int n, int final_time) {
 	ofstream fs;
 	string filename;
-	
+
 	//set file name : 'method'_n_steps_N_planets.txt
-	
+
 	if (flag.find("e") != string::npos) { filename = "EULER_"; }
-	else if(flag.find("v") != string::npos){ filename = "VV_"; }
+	else if (flag.find("v") != string::npos) { filename = "VV_"; }
 	else if (flag.find("p") != string::npos) { filename = "Precession_"; }
 	filename += to_string(n);
 	filename += "_steps_";
@@ -217,28 +198,28 @@ void output_file(string flag, solver* SOLVER, int N, int n, int final_time) {
 	filename += to_string(N);
 	filename += "_planets.txt";
 
-	cout << filename <<  endl;	
+	cout << filename << endl;
 
 	planet* temp_list = SOLVER->get_planet_list();
 
 	fs.open(filename);
 
-	
-		int i = 0;
-		for (i = 0; i < N; i++) { // print name
-			fs << temp_list[i].get_planet_name() << "                                    ";
+
+	int i = 0;
+	for (i = 0; i < N; i++) { // print name
+		fs << temp_list[i].get_planet_name() << "                                    ";
+	}
+	fs << endl;
+
+	for (int j = 0; j < n + 1; j++) { // print values of x & y position
+		i = 0;
+		for (i = 0; i < N; i++) {
+			fs << temp_list[i].get_planet_position_x(j) << "            " << temp_list[i].get_planet_position_y(j) << "            ";
 		}
 		fs << endl;
 
-		for (int j = 0; j < n + 1; j++) { // print values of x & y position
-			i = 0;
-			for (i = 0; i < N; i++) {
-				fs << temp_list[i].get_planet_position_x(j) << "            " << temp_list[i].get_planet_position_y(j) << "            ";
-			}
-			fs << endl;
-
-		}
+	}
 
 
-		fs.close();
+	fs.close();
 }

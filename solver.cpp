@@ -366,8 +366,8 @@ void solver::VV_relative(int n) { // sun = center of mass
 			planet_list[k].set_planet_v_y(planet_list[k].get_planet_v_y(j - 1) + 0.5 * h * (planet_list[k].get_planet_a_y(j - 1) + planet_list[k].get_planet_a_y(j)), j);
 
 		}
-		cout << planet_list[1].get_planet_position_x(j) << " " << planet_list[1].get_planet_position_y(j) << endl;
-		system("pause");
+		//cout << planet_list[1].get_planet_position_x(j) << " " << planet_list[1].get_planet_position_y(j) << endl;
+		//system("pause");
 	}
 	//double R_tan_perihelion = return_perihelion(n);
 	//perihelion_R_ceta = atan(R_tan_perihelion) * 180 * 3600 / pi;
