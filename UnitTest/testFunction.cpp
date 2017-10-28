@@ -133,64 +133,18 @@ TEST_CASE("time") {
 }
 */
 
-TEST_CASE("check ceta") {
-	// compare ceta
-	cout << "*** check ceta ***" << endl;
-
+TEST_CASE("return_perihelion") {
 	int N = 2;
-	int n = 10000000;
-	int n_limit = 1000000;
-	int limit_repeat;
-	int final_time = 11;
-	int h_temp;
-	int final_limit_time;
-	
-	bool need_increase = true;
+	int n = 100000;
+	int final_time = 10;
 
-	double init_x = 0.3075;
-	double init_y = 0;
-	double init_vx = 0;
-	double init_vy = 3.408219e-2 * 365;
+	solver S(N, n, final_time);
+	//file name init
 
-	planet* temp_list;
-	solver temp(true);
+	double epsilon = 1.0e-8;
+	double result = S.return_perihelion(n);
 
-	//while (need_increase == true) {
-		limit_repeat = n / n_limit;
-		h_temp = 10 / n;
-		final_limit_time = h_temp * n_limit;
-		if (n > n_limit) {
-			for (int i = 0; i < limit_repeat; i++) {
-				cout << "   " << i << endl;
-				temp.init(init_x, init_y, init_vx, init_vy, N, n_limit, final_limit_time);
-				temp.VV(n_limit);
-				temp_list = temp.get_planet_list();
-				init_x = temp_list[1].get_planet_position_x(n_limit);
-				init_y = temp_list[1].get_planet_position_y(n_limit);
-				init_vx = temp_list[1].get_planet_v_x(n_limit);
-				init_vy = temp_list[1].get_planet_v_y(n_limit);
-				//temp.~solver();
-				//system("pause");
-				//delete[] temp_list;
-			}// 100year end
-			//temp.~solver();
+	cout << "result " << result << endl;
 
-			// 101th year
-			int last_period = 2 * n_limit;
-			solver temp2(init_x, init_y, init_vx, init_vy, N, last_period, final_limit_time);
-			//temp2.VV(last_period);
-
-			need_increase = temp2.check_time_resolution(last_period);
-			//if (need_increase == false) {
-				cout << temp2.get_N_ceta() << endl;
-				temp2.VV_relative(last_period);
-				cout << temp2.get_R_ceta();
-			//}
-			//else {
-			//	n = n * 10;
-			//}
-
-		}
-	//}
-
+	REQUIRE(abs(result) < epsilon);
 }
