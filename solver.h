@@ -33,8 +33,8 @@ public:
 
 	double cal_F_x(int step, int index, int number_planets);
 	double cal_F_y(int step, int index, int number_planets);
-	double cal_RF_x(int step, int index, int number_planets);
-	double cal_RF_y(int step, int index, int number_planets);
+	double cal_RF_x(double step, int index, int number_planets);
+	double cal_RF_y(double step, int index, int number_planets);
 
 	double cal_center_x(int step);
 	double cal_center_y(int step);
@@ -56,4 +56,8 @@ public:
 	//test stability
 	double check_circular(int n);
 	bool check_conservative(int n);
+	void VV_increase_beta(int n, double beta);
+	double cal_F_x_beta(double beta, double step, int index, int number_planets);
+	double cal_F_y_beta(double beta, double step, int index, int number_planets);
+
 };

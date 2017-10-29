@@ -67,7 +67,7 @@ int main(int argc, char* argv[])
 			output_file(flag, &SOLVER, N, n, final_time);
 		}
 		else if ((string(argv[i]).find("-") == 0 && string(argv[i]).find("p") != string::npos)) {
-			
+
 			int N = 2;
 			int n = 1e8;
 			int n_limit = 1e6; // limitation of steps number for each class
@@ -122,7 +122,7 @@ int main(int argc, char* argv[])
 				need_increase = temp2.check_time_resolution(last_period);
 				cout << "check time resolution end" << endl;
 				//if (need_increase == false) {
-				cout << "N ceta ('')" << temp2.get_N_ceta() << endl;
+				double Nceta = temp2.get_N_ceta();
 				//end of Newtonian precession
 
 
@@ -170,10 +170,7 @@ int main(int argc, char* argv[])
 				cout << "R_ceta " << temp2.get_R_ceta() << endl;
 				//end of Relativixtic precession
 
-				//}
-				//else {
-				//	n = n * 10;
-				//}
+				cout << "N ceta ('')" << Nceta << endl;
 
 			}
 
@@ -187,39 +184,32 @@ void output_file(string flag, solver* SOLVER, int N, int n, int final_time) {
 	string filename;
 
 	//set file name : 'method'_n_steps_N_planets.txt
+	for (int a = 0; a < N; a++) {
+		if (flag.find("e") != string::npos) { filename = "EULER_"; }
+		else if (flag.find("v") != string::npos) { filename = "VV_"; }
+		else if (flag.find("p") != string::npos) { filename = "Precession_"; }
+		planet* temp_list = SOLVER->get_planet_list();
 
-	if (flag.find("e") != string::npos) { filename = "EULER_"; }
-	else if (flag.find("v") != string::npos) { filename = "VV_"; }
-	else if (flag.find("p") != string::npos) { filename = "Precession_"; }
-	filename += to_string(n);
-	filename += "_steps_";
-	filename += to_string(final_time);
-	filename += "yr_";
-	filename += to_string(N);
-	filename += "_planets.txt";
+		filename += temp_list[a].get_planet_name();
+		filename += "_";
+		filename += to_string(n);
+		filename += "_steps_";
+		filename += to_string(final_time);
+		filename += "yr_";
+		filename += to_string(N);
+		filename += "_planets.txt";
 
-	cout << filename << endl;
+		cout << filename << endl;
 
-	planet* temp_list = SOLVER->get_planet_list();
+		fs.open(filename);
 
-	fs.open(filename);
+		fs << temp_list[a].get_planet_name() << endl;
 
 
-	int i = 0;
-	for (i = 0; i < N; i++) { // print name
-		fs << temp_list[i].get_planet_name() << "                                    ";
-	}
-	fs << endl;
-
-	for (int j = 0; j < n + 1; j++) { // print values of x & y position
-		i = 0;
-		for (i = 0; i < N; i++) {
-			fs << temp_list[i].get_planet_position_x(j) << "            " << temp_list[i].get_planet_position_y(j) << "            ";
+		for (int j = 0; j < n + 1; j++) { // print values of x & y position
+			fs << temp_list[a].get_planet_position_x(j) << "            " << temp_list[a].get_planet_position_y(j) << endl;
 		}
-		fs << endl;
-
+		fs.close();
+		filename.clear();
 	}
-
-
-	fs.close();
 }
