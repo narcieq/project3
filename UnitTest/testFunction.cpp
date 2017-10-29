@@ -131,7 +131,7 @@ TEST_CASE("time") {
 	timer2.get_duration();
 	cout << "Euler's method :: FLOPS = " << 22 * (n + 1) << endl;
 }
-*/
+
 
 TEST_CASE("return_perihelion") {
 	int N = 2;
@@ -147,4 +147,28 @@ TEST_CASE("return_perihelion") {
 	cout << "result " << result << endl;
 
 	REQUIRE(abs(result) < epsilon);
+}*/
+
+TEST_CASE("increase_beta") {
+	//testing the manipulation of force formula
+	//increase r^2 to r^3
+
+	int N = 2;
+	int n = 100000;
+	int final_time = 1;
+
+	solver S(N, n, final_time);
+	//file name init
+
+	double beta = 2.0;
+	double F[5] = { 0, 0.5, 0.7, 0.9, 0.999999 };
+
+	//for(int i = 0 ;i < 5; i++) {
+		S.VV_increase_beta(n, beta + 1.0);
+	//}
+
+
+
+	double epsilon = 1.0e-8;
+
 }
